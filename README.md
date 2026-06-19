@@ -71,7 +71,7 @@ Instead of relying solely on exact keyword matching, AviMind uses embeddings and
 ## Clone the repository
 
 ```bash
-git clone https://github.com/<your-github-username>/avimind.git
+git clone https://github.com/avinashmhto/avimind.git
 
 cd avimind
 ```
@@ -100,8 +100,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-````markdown
-## Run AviMind
+## Run AviMind Locally
 
 ```bash
 uvicorn avimind_server.main:app --reload
@@ -115,15 +114,7 @@ http://127.0.0.1:8000/docs
 
 ---
 
-## 🐳 Run with Docker
-
-Clone the repository:
-
-```bash
-git clone https://github.com/avinashmhto/avimind.git
-
-cd avimind
-```
+# 🐳 Run with Docker
 
 Build and start AviMind:
 
@@ -144,12 +135,12 @@ docker compose down
 ```
 
 AviMind uses SQLite by default and stores its database in the local `data/` directory, so no external database is required to get started.
-````
 
+---
 
 # 📝 Example
 
-## Store a memory
+## Store a Memory
 
 ```json
 {
@@ -169,15 +160,15 @@ AviMind uses SQLite by default and stores its database in the local `data/` dire
 }
 ```
 
-## Retrieve relevant context
+## Retrieve Context
 
-Query:
+**Query:**
 
-```
+```text
 What startup is the user building?
 ```
 
-Response:
+**Response:**
 
 ```json
 {
@@ -187,7 +178,8 @@ Response:
 }
 ```
 
-Even though the query wording differs from the stored memory, AviMind retrieves the correct information using semantic understanding and hybrid ranking.
+AviMind retrieves relevant memories using semantic understanding and hybrid ranking, even when the query wording differs from the original stored text.
+
 
 ---
 
