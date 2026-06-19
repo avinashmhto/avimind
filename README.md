@@ -1,197 +1,119 @@
+<p align="center">
+  <img src="assets/avimind_banner.png" alt="AviMind Banner" width="100%">
+</p>
+
 # 🧠 AviMind
 
-> **🧠 Give your AI agents long-term memory with semantic search, intelligent retrieval, and automatic deduplication.**
+> **Give your AI agents long-term memory with semantic search, intelligent retrieval, and automatic deduplication.**
 
-AviMind is an open-source memory layer that enables AI agents to remember information across conversations using semantic search, intelligent ranking, and automatic deduplication.
-
-Unlike simple chat history, AviMind stores structured long-term memory that can be retrieved based on meaning rather than exact keywords.
+Open-source persistent memory for AI agents and LLM applications with semantic search, intelligent ranking, and automatic deduplication.
 
 ---
 
-## ✨ Features
+## ✨ Why AviMind?
 
-- 🔍 Semantic memory retrieval using embeddings
-- 🧠 Persistent long-term memory storage
-- 🚫 Automatic duplicate detection
-- ⭐ Memory importance scoring and ranking
-- ⚡ FastAPI REST APIs
-- 💾 SQLite support out of the box
-- 🔌 Framework agnostic (works with any LLM or AI agent)
-- 🏗️ Designed for future PostgreSQL, pgvector, and Redis support
+Most AI agents forget everything after a conversation ends.
 
----
-
-## 🚀 Why AviMind?
-
-Most LLMs forget everything when a conversation ends.
-
-AviMind gives your AI applications a persistent memory layer so they can remember:
+AviMind provides a reusable memory layer that enables applications to remember:
 
 - User preferences
-- Past decisions
 - Business context
-- Agent outputs
-- Important facts
-- Tool results
+- Prior conversations
+- Agent decisions
+- Tool outputs
+- Long-term facts
 
-This enables more personalized and context-aware AI experiences.
-
----
-
-## 🏛️ High-Level Architecture
-
-```text
-                 +----------------------+
-                 |   AI Agent / LLM     |
-                 +----------+-----------+
-                            |
-                            |
-                     REST API Calls
-                            |
-                            v
-                +------------------------+
-                |       AviMind API      |
-                |        (FastAPI)       |
-                +-----------+------------+
-                            |
-            +---------------+----------------+
-            |                                |
-            | Semantic Embeddings            |
-            | Duplicate Detection            |
-            | Memory Ranking                 |
-            +---------------+----------------+
-                            |
-                            v
-                  +--------------------+
-                  |    SQLite (v0.2)   |
-                  |  Persistent Memory |
-                  +--------------------+
-
-                (PostgreSQL / pgvector /
-                 Redis support planned)
-```
+Unlike simple chat history, AviMind retrieves information based on **meaning**, not just exact keyword matches.
 
 ---
 
-## 📦 Installation
+## 🚀 Features
+
+- ✅ Persistent long-term memory
+- ✅ Semantic search using embeddings
+- ✅ Automatic duplicate detection
+- ✅ Memory importance scoring
+- ✅ Intelligent context retrieval
+- ✅ FastAPI REST APIs
+- ✅ SQLite backend (out of the box)
+- 🚧 PostgreSQL support (planned)
+- 🚧 pgvector integration (planned)
+- 🚧 Redis session memory (planned)
+- 🚧 Python SDK (planned)
+- 🚧 Docker support (planned)
+
+---
+
+## ⚡ Quick Start
 
 ```bash
-git clone <repository-url>
+git clone https://gitlab.com/avinashmahto/avimind.git
 
 cd avimind
 
 python -m venv .venv
 
-# Linux / macOS
-source .venv/bin/activate
-
-# Windows Git Bash
+# Windows (Git Bash)
 source .venv/Scripts/activate
+
+# Linux / macOS
+# source .venv/bin/activate
 
 pip install -r requirements.txt
 
 uvicorn avimind_server.main:app --reload
-```
 
-Open Swagger UI:
+Open:
 
-```
 http://127.0.0.1:8000/docs
-```
 
----
+🏗️ Architecture
+          AI Agent / LLM
+                 │
+                 │
+          REST API Calls
+                 │
+                 ▼
+        +-------------------+
+        |     AviMind       |
+        |  Memory Engine    |
+        +-------------------+
+          │      │      │
+          │      │      │
+     Semantic  Ranking  Deduplication
+      Search
+                 │
+                 ▼
+          SQLite Database
 
-## 📝 Example: Store Memory
+🛣️ Roadmap
+🐳 Docker support
+📦 Python SDK
+🐘 PostgreSQL backend
+🔎 pgvector integration
+⚡ Redis session memory
+🤖 LangGraph integration
+🔌 MCP compatibility
+☁️ Cloud deployment guides
+📄 License
 
-`POST /memory`
+MIT License
 
-```json
-{
-  "user_id": "avinash",
-  "agent_id": "demo-agent",
-  "session_id": "chat-001",
-  "memory_type": "profile_memory",
-  "content": "User prefers AWS Singapore region and simple human language.",
-  "source": "manual",
-  "created_by": "human",
-  "tags": [
-    "aws",
-    "singapore",
-    "preference"
-  ],
-  "importance": 0.9
-}
-```
+👨‍💻 Author
 
----
+Avinash Mahto
 
-## 🔎 Example: Semantic Search
 
-```
-GET /memory/search?user_id=avinash&query=Which cloud region does the user prefer?
-```
+## One final suggestion
 
-AviMind retrieves the relevant memory even when the wording differs from the original stored text.
+Your repository is already in good shape. I would make **one branding change**:
 
----
+Change the subtitle from:
 
-## 🎯 Current Capabilities
+> **Persistent Memory Engine for AI Agents and LLM Applications**
 
-| Feature | Status |
-|----------|--------|
-| Persistent Memory | ✅ |
-| Semantic Search | ✅ |
-| Memory Scoring | ✅ |
-| Automatic Deduplication | ✅ |
-| FastAPI REST APIs | ✅ |
-| SQLite Backend | ✅ |
-| PostgreSQL Backend | 🚧 Planned |
-| pgvector Support | 🚧 Planned |
-| Redis Session Memory | 🚧 Planned |
-| Python SDK | 🚧 Planned |
-| Docker Deployment | 🚧 Planned |
+to:
 
----
+> **The open-source memory layer that gives AI agents long-term memory.**
 
-## 🗺️ Roadmap
-
-### v0.2
-- Semantic search
-- Memory scoring
-- Duplicate detection
-- SQLite persistence
-
-### v0.3
-- Python SDK
-- Docker support
-- Memory listing APIs
-- Memory update APIs
-
-### v1.0
-- PostgreSQL backend
-- pgvector integration
-- Redis session memory
-- Multi-tenant support
-- Production deployment guides
-
----
-
-## 🤝 Contributing
-
-Contributions, ideas, bug reports, and feature requests are welcome.
-
-If you find AviMind useful, consider starring the repository and sharing your feedback.
-
----
-
-## 📄 License
-
-Released under the MIT License.
-
----
-
-## 👨‍💻 Author
-
-**Avinash Mahto**
-
-Building practical infrastructure for AI agents, enterprise GenAI, and cloud-native platforms.
+It's shorter, more memorable, and immediately communicates the value proposition. After adding the banner image and this polished README, your project will look significantly more professional. 🚀
