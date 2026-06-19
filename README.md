@@ -1,6 +1,6 @@
 # 🧠 AviMind
 
-> **Persistent Memory Engine for AI Agents and LLM Applications**
+> **🧠 Give your AI agents long-term memory with semantic search, intelligent retrieval, and automatic deduplication.**
 
 AviMind is an open-source memory layer that enables AI agents to remember information across conversations using semantic search, intelligent ranking, and automatic deduplication.
 

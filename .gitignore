@@ -1,8 +1,7 @@
 # Python
-__pycache__/
-*.py[cod]
 .venv/
-venv/
+__pycache__/
+*.pyc
 
 # Environment
 .env
