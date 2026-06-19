@@ -100,13 +100,21 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
+````markdown
 ## Run AviMind
 
 ```bash
 uvicorn avimind_server.main:app --reload
 ```
 
-````markdown
+Open Swagger UI:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+---
+
 ## 🐳 Run with Docker
 
 Clone the repository:
@@ -115,7 +123,7 @@ Clone the repository:
 git clone https://github.com/avinashmhto/avimind.git
 
 cd avimind
-````
+```
 
 Build and start AviMind:
 
@@ -125,7 +133,7 @@ docker compose up --build
 
 Once the container is running, open:
 
-```
+```text
 http://localhost:8000/docs
 ```
 
@@ -135,18 +143,9 @@ To stop the service:
 docker compose down
 ```
 
-AviMind uses SQLite by default and stores its database in the local `data/` directory, making it easy to get started without any additional configuration.
+AviMind uses SQLite by default and stores its database in the local `data/` directory, so no external database is required to get started.
+````
 
-```
-```
-
-Open Swagger UI:
-
-```
-http://127.0.0.1:8000/docs
-```
-
----
 
 # 📝 Example
 
