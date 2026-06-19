@@ -68,6 +68,7 @@ Open:
 http://127.0.0.1:8000/docs
 
 🏗️ Architecture
+
           AI Agent / LLM
                  │
                  │
@@ -102,18 +103,3 @@ MIT License
 👨‍💻 Author
 
 Avinash Mahto
-
-
-## One final suggestion
-
-Your repository is already in good shape. I would make **one branding change**:
-
-Change the subtitle from:
-
-> **Persistent Memory Engine for AI Agents and LLM Applications**
-
-to:
-
-> **The open-source memory layer that gives AI agents long-term memory.**
-
-It's shorter, more memorable, and immediately communicates the value proposition. After adding the banner image and this polished README, your project will look significantly more professional. 🚀
