@@ -4,58 +4,64 @@
 
 # 🧠 AviMind
 
-> **The open-source memory layer that gives AI agents long-term memory through semantic search, intelligent retrieval, and automatic deduplication.**
+![Python](https://img.shields.io/badge/Python-3.11+-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-Framework-green)
+![License](https://img.shields.io/badge/License-MIT-yellow)
+![Status](https://img.shields.io/badge/Status-Active-success)
 
-AviMind is an open-source persistent memory engine designed for AI agents and LLM-powered applications. It enables applications to remember user preferences, past interactions, business context, and important knowledge across sessions.
+> **The open-source memory layer that gives AI agents long-term memory through semantic search, hybrid retrieval, intelligent ranking, and automatic deduplication.**
 
-Unlike traditional chat history, AviMind retrieves memories based on **meaning**, not just exact keyword matches, helping AI systems deliver smarter and more personalized responses.
+AviMind is an open-source persistent memory engine for AI agents and LLM-powered applications. It enables applications to remember user preferences, business context, conversations, and long-term knowledge across sessions.
+
+Unlike traditional chat history, AviMind combines **semantic search**, **hybrid ranking**, **keyword awareness**, and **memory importance scoring** to retrieve the most relevant context for your AI applications.
 
 ---
 
-# ✨ Key Features
+# ✨ Features
 
 * ✅ Persistent long-term memory
-* ✅ Semantic search using vector embeddings
+* ✅ Semantic search with embeddings
+* ✅ Hybrid retrieval (semantic + keyword ranking)
 * ✅ Automatic duplicate detection
-* ✅ Memory importance scoring and ranking
+* ✅ Memory importance scoring
 * ✅ Intelligent context retrieval
 * ✅ FastAPI REST APIs
 * ✅ SQLite backend (zero configuration)
+* ✅ Docker support
 * 🚧 PostgreSQL support (planned)
 * 🚧 pgvector integration (planned)
 * 🚧 Redis session memory (planned)
 * 🚧 Python SDK (planned)
-* 🚧 Docker support (planned)
 
 ---
 
 # 💡 Why AviMind?
 
-Most AI agents lose context once a conversation ends.
+Most AI agents forget everything after a conversation ends.
 
-AviMind provides a reusable memory layer that allows applications to remember:
+AviMind acts as a reusable memory layer that enables applications to remember:
 
 * User preferences
 * Business context
-* Prior conversations
+* Long-term facts
 * Agent decisions
 * Tool outputs
-* Long-term facts
 * Organizational knowledge
+* Previous conversations
 
-Instead of relying on exact keyword matching, AviMind uses semantic understanding to retrieve the most relevant memories.
+Instead of relying solely on exact keyword matching, AviMind uses embeddings and hybrid retrieval techniques to surface the most relevant memories automatically.
 
 ---
 
 # 🚀 Example Use Cases
 
-* AI chatbots with persistent user memory
+* AI chatbots with persistent memory
 * Enterprise AI copilots
-* Customer support assistants
 * Agentic workflows
-* Research assistants
+* Customer support assistants
 * Personal AI assistants
-* Knowledge management systems
+* Research assistants
+* Knowledge management platforms
 * LLM applications requiring long-term context
 
 ---
@@ -65,7 +71,7 @@ Instead of relying on exact keyword matching, AviMind uses semantic understandin
 ## Clone the repository
 
 ```bash
-git clone https://gitlab.com/avinashmahto/avimind.git
+git clone https://github.com/<your-github-username>/avimind.git
 
 cd avimind
 ```
@@ -108,33 +114,47 @@ http://127.0.0.1:8000/docs
 
 ---
 
-# 📝 Example Memory
+# 📝 Example
+
+## Store a memory
 
 ```json
 {
   "user_id": "avinash",
-  "agent_id": "demo-agent",
-  "session_id": "chat-001",
-  "memory_type": "profile_memory",
-  "content": "User prefers AWS Singapore region and simple human language.",
+  "agent_id": "goal-agent",
+  "session_id": "goal-001",
+  "memory_type": "goal_memory",
+  "content": "User is building AviMind as an open-source persistent memory engine for AI agents.",
   "source": "manual",
   "created_by": "human",
   "tags": [
-    "aws",
-    "singapore",
-    "preference"
+    "startup",
+    "avimind",
+    "opensource"
   ],
-  "importance": 0.9
+  "importance": 1.0
 }
 ```
 
-Example semantic query:
+## Retrieve relevant context
+
+Query:
 
 ```
-Which cloud region does the user prefer?
+What startup is the user building?
 ```
 
-AviMind can retrieve the correct memory even when the query wording differs from the original stored text.
+Response:
+
+```json
+{
+  "context": [
+    "User is building AviMind as an open-source persistent memory engine for AI agents."
+  ]
+}
+```
+
+Even though the query wording differs from the stored memory, AviMind retrieves the correct information using semantic understanding and hybrid ranking.
 
 ---
 
@@ -144,66 +164,66 @@ AviMind can retrieve the correct memory even when the query wording differs from
 | ----------------------- | ---------- |
 | Persistent Memory       | ✅          |
 | Semantic Search         | ✅          |
+| Hybrid Retrieval        | ✅          |
 | Automatic Deduplication | ✅          |
 | Memory Ranking          | ✅          |
 | Context Retrieval       | ✅          |
 | FastAPI REST API        | ✅          |
 | SQLite Backend          | ✅          |
+| Docker Support          | ✅          |
 | PostgreSQL Backend      | 🚧 Planned |
-| pgvector Support        | 🚧 Planned |
+| pgvector Integration    | 🚧 Planned |
 | Redis Session Memory    | 🚧 Planned |
 | Python SDK              | 🚧 Planned |
-| Docker Support          | 🚧 Planned |
 
 ---
 
-# 🚧 Project Status
+# 🚧 Current Status
 
-AviMind is under active development.
+**Version:** `v0.3`
 
-**Current release:** v0.2
+Implemented:
 
-Implemented today:
-
-* Semantic memory retrieval
-* Embedding-based search
+* Persistent memory storage
+* Semantic search
+* Hybrid retrieval (semantic + keyword ranking)
 * Automatic duplicate detection
-* Memory scoring
-* SQLite persistence
-* REST APIs
-
-Upcoming releases will focus on production deployments, SDKs, Docker, PostgreSQL, Redis, and framework integrations.
+* Memory importance scoring
+* Context retrieval APIs
+* SQLite backend
+* Docker support
+* REST APIs with Swagger documentation
 
 ---
 
 # 🛣️ Roadmap
 
-## v0.3
+## v0.4
 
-* Docker support
 * Python SDK
-* Memory listing APIs
 * Memory update APIs
+* Memory listing APIs
+* Memory expiration policies
 
 ## v1.0
 
 * PostgreSQL backend
 * pgvector integration
 * Redis session memory
-* Multi-tenant architecture
-* Production deployment guides
-* OpenAI integration examples
-* Ollama integration examples
-* LangGraph integration examples
+* Multi-tenant support
+* OpenAI integration
+* Ollama integration
+* LangGraph integration
 * MCP compatibility
+* Cloud deployment guides
 
 ---
 
 # 🤝 Contributing
 
-Contributions, feature requests, bug reports, and ideas are always welcome.
+Contributions, ideas, feature requests, and pull requests are welcome.
 
-If AviMind helps your AI applications become more context-aware, consider starring the repository and sharing your feedback.
+If AviMind helps your AI applications become smarter and more context-aware, please consider giving the project a ⭐ on GitHub.
 
 ---
 
@@ -217,4 +237,4 @@ Released under the MIT License.
 
 **Avinash Mahto**
 
-Building practical infrastructure for AI agents, enterprise GenAI, and cloud-native platforms.
+Building practical infrastructure for AI agents, enterprise GenAI, cloud-native platforms, and intelligent memory systems.

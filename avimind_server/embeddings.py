@@ -1,30 +1,34 @@
 import json
 from functools import lru_cache
-from typing import List
+from typing import List, Optional
 
 import numpy as np
-from sentence_transformers import SentenceTransformer
+from fastembed import TextEmbedding
 
 
-MODEL_NAME = "all-MiniLM-L6-v2"
+MODEL_NAME = "BAAI/bge-small-en-v1.5"
 
 
 @lru_cache(maxsize=1)
-def get_embedding_model() -> SentenceTransformer:
-    return SentenceTransformer(MODEL_NAME)
+def get_embedding_model() -> TextEmbedding:
+    return TextEmbedding(model_name=MODEL_NAME)
 
 
 def generate_embedding(text: str) -> List[float]:
     model = get_embedding_model()
-    embedding = model.encode(text, normalize_embeddings=True)
-    return embedding.tolist()
+    embeddings = list(model.embed([text]))
+
+    if not embeddings:
+        return []
+
+    return embeddings[0].tolist()
 
 
 def embedding_to_json(embedding: List[float]) -> str:
     return json.dumps(embedding)
 
 
-def embedding_from_json(value: str | None) -> List[float] | None:
+def embedding_from_json(value: Optional[str]) -> Optional[List[float]]:
     if not value:
         return None
 

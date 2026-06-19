@@ -1,3 +1,4 @@
+import re
 from typing import Any, Dict, List, Optional, Tuple
 
 from sqlalchemy import or_
@@ -14,6 +15,11 @@ from avimind_server.schemas import MemoryCreateRequest
 
 
 DUPLICATE_THRESHOLD = 0.92
+
+SEMANTIC_WEIGHT = 0.80
+IMPORTANCE_WEIGHT = 0.05
+KEYWORD_WEIGHT_CAP = 0.10
+TAG_WEIGHT_CAP = 0.05
 
 
 def create_memory(db: Session, request: MemoryCreateRequest) -> Tuple[Memory, bool]:
@@ -71,6 +77,7 @@ def search_memories(
     limit: int = 5,
 ) -> List[Dict[str, Any]]:
     query_embedding = generate_embedding(query)
+    query_terms = _tokenize(query)
 
     db_query = db.query(Memory).filter(Memory.user_id == user_id)
 
@@ -99,12 +106,22 @@ def search_memories(
         similarity_score = cosine_similarity(query_embedding, memory_embedding)
         importance = memory.importance or 0.5
 
-        final_score = (similarity_score * 0.8) + (importance * 0.2)
+        keyword_score = _keyword_score(query_terms, memory.content)
+        tag_score = _tag_score(query_terms, memory.tags)
+
+        final_score = (
+            similarity_score * SEMANTIC_WEIGHT
+            + importance * IMPORTANCE_WEIGHT
+            + keyword_score
+            + tag_score
+        )
 
         ranked_results.append(
             {
                 "memory": memory,
                 "similarity_score": round(similarity_score, 4),
+                "keyword_score": round(keyword_score, 4),
+                "tag_score": round(tag_score, 4),
                 "final_score": round(final_score, 4),
             }
         )
@@ -146,6 +163,65 @@ def delete_memory(db: Session, memory_id: str) -> bool:
     db.commit()
 
     return True
+
+
+def _tokenize(text: str) -> List[str]:
+    words = re.findall(r"[a-zA-Z0-9]+", text.lower())
+
+    stop_words = {
+        "what",
+        "which",
+        "where",
+        "when",
+        "does",
+        "user",
+        "prefer",
+        "prefers",
+        "the",
+        "and",
+        "for",
+        "with",
+        "from",
+        "that",
+        "this",
+        "are",
+        "is",
+        "to",
+        "of",
+        "in",
+        "on",
+        "a",
+        "an",
+    }
+
+    return [word for word in words if len(word) > 3 and word not in stop_words]
+
+
+def _keyword_score(query_terms: List[str], content: str) -> float:
+    content_lower = content.lower()
+
+    score = 0.0
+
+    for term in query_terms:
+        if term in content_lower:
+            score += 0.05
+
+    return min(score, KEYWORD_WEIGHT_CAP)
+
+
+def _tag_score(query_terms: List[str], tags: Optional[List[str]]) -> float:
+    if not tags:
+        return 0.0
+
+    normalized_tags = {tag.lower() for tag in tags}
+
+    score = 0.0
+
+    for term in query_terms:
+        if term in normalized_tags:
+            score += 0.05
+
+    return min(score, TAG_WEIGHT_CAP)
 
 
 def _merge_metadata(

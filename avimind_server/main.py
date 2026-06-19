@@ -12,7 +12,6 @@ from avimind_server.schemas import (
 from avimind_server.memory_service import (
     create_memory,
     delete_memory,
-    get_context,
     search_memories,
 )
 
@@ -115,9 +114,10 @@ def memory_context(
     session_id: str | None = None,
     memory_type: str | None = None,
     limit: int = Query(default=5, ge=1, le=20),
+    min_score: float = Query(default=0.65, ge=0.0, le=1.0),
     db: Session = Depends(get_db),
 ):
-    context = get_context(
+    results = search_memories(
         db=db,
         user_id=user_id,
         query=query,
@@ -126,6 +126,12 @@ def memory_context(
         memory_type=memory_type,
         limit=limit,
     )
+
+    context = [
+        item["memory"].content
+        for item in results
+        if item["final_score"] >= min_score
+    ]
 
     return ContextResponse(context=context)
 
