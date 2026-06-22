@@ -28,10 +28,11 @@ Unlike traditional chat history, AviMind combines **semantic search**, **hybrid 
 * ✅ FastAPI REST APIs
 * ✅ SQLite backend (zero configuration)
 * ✅ Docker support
+* ✅ Python SDK
 * 🚧 PostgreSQL support (planned)
 * 🚧 pgvector integration (planned)
 * 🚧 Redis session memory (planned)
-* 🚧 Python SDK (planned)
+
 
 ---
 
@@ -138,6 +139,58 @@ AviMind uses SQLite by default and stores its database in the local `data/` dire
 
 ---
 
+# 🐍 Python SDK
+
+AviMind ships with a lightweight Python SDK that makes integration straightforward.
+
+## Create a client
+
+```python
+from avimind import AviMind
+
+client = AviMind("http://localhost:8000")
+Store a memory
+client.remember(
+    user_id="avinash",
+    agent_id="sdk-agent",
+    session_id="chat-001",
+    memory_type="profile_memory",
+    content="User prefers AWS Singapore region.",
+    tags=["aws", "preference"],
+    importance=0.9,
+)
+Search memories
+results = client.search(
+    user_id="avinash",
+    query="Which cloud region does the user prefer?"
+)
+
+print(results)
+Retrieve context
+context = client.context(
+    user_id="avinash",
+    query="Which cloud region does the user prefer?"
+)
+
+print(context)
+Check server health
+status = client.health()
+
+print(status)
+Delete a memory
+client.delete("memory-id")
+
+The SDK currently supports:
+
+health()
+remember()
+search()
+context()
+delete()
+
+---
+
+
 # 📝 Example
 
 ## Store a Memory
@@ -196,16 +249,16 @@ AviMind retrieves relevant memories using semantic understanding and hybrid rank
 | FastAPI REST API        | ✅          |
 | SQLite Backend          | ✅          |
 | Docker Support          | ✅          |
+| Python SDK              | ✅          | 
 | PostgreSQL Backend      | 🚧 Planned |
 | pgvector Integration    | 🚧 Planned |
 | Redis Session Memory    | 🚧 Planned |
-| Python SDK              | 🚧 Planned |
 
 ---
 
 # 🚧 Current Status
 
-**Version:** `v0.3`
+**Version:** `v0.4`
 
 Implemented:
 
@@ -225,10 +278,20 @@ Implemented:
 
 ## v0.4
 
-* Python SDK
+* Python SDK 
+* Memory update APIs 
+* Memory listing APIs 
+* Memory expiration policies
+
+with:
+
+## v0.5
+
 * Memory update APIs
 * Memory listing APIs
 * Memory expiration policies
+* Publish SDK to PyPI
+* Authentication support for SDK
 
 ## v1.0
 
