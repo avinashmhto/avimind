@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "avimind"
+version = "0.4.0"
+description = "Persistent memory layer for AI agents and LLM applications."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [
+  { name = "Avinash Mahto" }
+]
+dependencies = [
+  "requests>=2.31.0"
+]
+
+[tool.setuptools]
+packages = ["avimind"]

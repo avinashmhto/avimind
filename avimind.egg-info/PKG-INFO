@@ -1,3 +1,15 @@
+Metadata-Version: 2.4
+Name: avimind
+Version: 0.4.0
+Summary: Persistent memory layer for AI agents and LLM applications.
+Author: Avinash Mahto
+License: MIT
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests>=2.31.0
+Dynamic: license-file
+
 <p align="center">
   <img src="assets/avimind_banner.png" alt="AviMind Banner" width="100%">
 </p>
@@ -8,32 +20,12 @@
 ![FastAPI](https://img.shields.io/badge/FastAPI-Framework-green)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 ![Status](https://img.shields.io/badge/Status-Active-success)
-![PyPI](https://img.shields.io/pypi/v/avimind)
 
 > **The open-source memory layer that gives AI agents long-term memory through semantic search, hybrid retrieval, intelligent ranking, and automatic deduplication.**
 
 AviMind is an open-source persistent memory engine for AI agents and LLM-powered applications. It enables applications to remember user preferences, business context, conversations, and long-term knowledge across sessions.
 
 Unlike traditional chat history, AviMind combines **semantic search**, **hybrid ranking**, **keyword awareness**, and **memory importance scoring** to retrieve the most relevant context for your AI applications.
-
-# 📦 Install
-
-```bash
-pip install avimind
-```
-
-Then initialize the client:
-
-```python
-from avimind import AviMind
-
-client = AviMind("http://localhost:8000")
-```
-Then initialize the client:
-
-from avimind import AviMind
-
-client = AviMind("http://localhost:8000")
 
 ---
 
