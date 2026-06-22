@@ -29,11 +29,6 @@ from avimind import AviMind
 
 client = AviMind("http://localhost:8000")
 ```
-Then initialize the client:
-
-from avimind import AviMind
-
-client = AviMind("http://localhost:8000")
 
 ---
 
