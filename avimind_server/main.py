@@ -15,7 +15,7 @@ from avimind_server.memory_service import (
     search_memories,
 )
 
-Base.metadata.create_all(bind=engine)
+# Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="AviMind",

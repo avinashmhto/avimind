@@ -7,3 +7,5 @@ fastembed
 numpy
 onnxruntime
 requests
+psycopg2-binary
+alembic

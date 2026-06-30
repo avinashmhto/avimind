@@ -9,12 +9,14 @@
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 ![Status](https://img.shields.io/badge/Status-Active-success)
 ![PyPI](https://img.shields.io/pypi/v/avimind)
+![Downloads](https://img.shields.io/pypi/dm/avimind)
+![GitHub stars](https://img.shields.io/github/stars/avinashmhto/avimind?style=social)
 
 > **The open-source memory layer that gives AI agents long-term memory through semantic search, hybrid retrieval, intelligent ranking, and automatic deduplication.**
 
 AviMind is an open-source persistent memory engine for AI agents and LLM-powered applications. It enables applications to remember user preferences, business context, conversations, and long-term knowledge across sessions.
 
-Unlike traditional chat history, AviMind combines **semantic search**, **hybrid ranking**, **keyword awareness**, and **memory importance scoring** to retrieve the most relevant context for your AI applications.
+Unlike traditional chat history, AviMind combines **semantic search**, **hybrid retrieval**, **keyword awareness**, and **memory importance scoring** to retrieve the most relevant context for your AI applications.
 
 # 📦 Install
 
@@ -22,13 +24,28 @@ Unlike traditional chat history, AviMind combines **semantic search**, **hybrid 
 pip install avimind
 ```
 
-Then initialize the client:
+Quick example:
 
 ```python
 from avimind import AviMind
 
-client = AviMind("http://localhost:8000")
+client = AviMind(
+    base_url="http://localhost:8000"
+)
+
+client.remember(
+    user_id="john",
+    content="User prefers AWS Singapore."
+)
+
+print(
+    client.context(
+        user_id="john",
+        query="Which cloud region does the user prefer?"
+    )
+)
 ```
+> The Python SDK communicates with a running AviMind server.
 
 ---
 
@@ -44,7 +61,8 @@ client = AviMind("http://localhost:8000")
 * ✅ SQLite backend (zero configuration)
 * ✅ Docker support
 * ✅ Python SDK
-* 🚧 PostgreSQL support (planned)
+* ✅ PostgreSQL backend
+* ✅ Alembic database migrations
 * 🚧 pgvector integration (planned)
 * 🚧 Redis session memory (planned)
 
@@ -150,7 +168,31 @@ To stop the service:
 docker compose down
 ```
 
-AviMind uses SQLite by default and stores its database in the local `data/` directory, so no external database is required to get started.
+AviMind uses SQLite by default for local development and also supports PostgreSQL for production deployments.
+
+---
+
+# 🐘 Using PostgreSQL
+
+Configure a `.env` file:
+
+```env
+DB_ENGINE=postgres
+DB_HOST=<host>
+DB_PORT=5432
+DB_NAME=avimind
+DB_USER=<user>
+DB_PASSWORD=<password>
+...
+```
+
+Run database migrations:
+
+```bash
+alembic upgrade head
+```
+
+> AviMind automatically manages the database schema using Alembic migrations.
 
 ---
 
@@ -158,13 +200,19 @@ AviMind uses SQLite by default and stores its database in the local `data/` dire
 
 AviMind ships with a lightweight Python SDK that makes integration straightforward.
 
-## Create a client
+### Create a client
 
 ```python
 from avimind import AviMind
 
-client = AviMind("http://localhost:8000")
-Store a memory
+client = AviMind(
+    base_url="http://localhost:8000"
+)
+```
+
+## Store a memory
+
+```python
 client.remember(
     user_id="avinash",
     agent_id="sdk-agent",
@@ -174,37 +222,51 @@ client.remember(
     tags=["aws", "preference"],
     importance=0.9,
 )
-Search memories
+```
+
+## Search memories
+
+```python
 results = client.search(
     user_id="avinash",
     query="Which cloud region does the user prefer?"
 )
 
 print(results)
-Retrieve context
+```
+
+## Retrieve context
+
+```python
 context = client.context(
     user_id="avinash",
     query="Which cloud region does the user prefer?"
 )
 
 print(context)
-Check server health
-status = client.health()
+```
 
-print(status)
-Delete a memory
+## Health check
+
+```python
+print(client.health())
+```
+
+## Delete a memory
+
+```python
 client.delete("memory-id")
+```
 
-The SDK currently supports:
+### Supported SDK methods
 
-health()
-remember()
-search()
-context()
-delete()
+- `health()`
+- `remember()`
+- `search()`
+- `context()`
+- `delete()`
 
 ---
-
 
 # 📝 Example
 
@@ -253,19 +315,20 @@ AviMind retrieves relevant memories using semantic understanding and hybrid rank
 
 # 🏗️ Core Capabilities
 
-| Capability              | Status     |
-| ----------------------- | ---------- |
-| Persistent Memory       | ✅          |
-| Semantic Search         | ✅          |
-| Hybrid Retrieval        | ✅          |
-| Automatic Deduplication | ✅          |
-| Memory Ranking          | ✅          |
-| Context Retrieval       | ✅          |
-| FastAPI REST API        | ✅          |
-| SQLite Backend          | ✅          |
-| Docker Support          | ✅          |
-| Python SDK              | ✅          | 
-| PostgreSQL Backend      | 🚧 Planned |
+| Capability              | Status |
+| ----------------------- | ------ |
+| Persistent Memory       | ✅ |
+| Semantic Search         | ✅ |
+| Hybrid Retrieval        | ✅ |
+| Automatic Deduplication | ✅ |
+| Memory Ranking          | ✅ |
+| Context Retrieval       | ✅ |
+| FastAPI REST API        | ✅ |
+| SQLite Backend          | ✅ |
+| PostgreSQL Backend      | ✅ |
+| Alembic Migrations      | ✅ |
+| Docker Support          | ✅ |
+| Python SDK              | ✅ |
 | pgvector Integration    | 🚧 Planned |
 | Redis Session Memory    | 🚧 Planned |
 
@@ -273,52 +336,53 @@ AviMind retrieves relevant memories using semantic understanding and hybrid rank
 
 # 🚧 Current Status
 
-**Version:** `v0.4`
+**Version:** `0.5.0`
 
 Implemented:
 
 * Persistent memory storage
 * Semantic search
-* Hybrid retrieval (semantic + keyword ranking)
+* Hybrid retrieval
 * Automatic duplicate detection
 * Memory importance scoring
 * Context retrieval APIs
 * SQLite backend
+* PostgreSQL backend
+* Alembic migrations
 * Docker support
-* REST APIs with Swagger documentation
+* Python SDK
+* REST APIs with Swagger
+* Published on PyPI
 
 ---
 
 # 🛣️ Roadmap
 
-## v0.4
+## v0.6
 
-* Python SDK 
-* Memory update APIs 
-* Memory listing APIs 
-* Memory expiration policies
+- Memory update APIs
+- Memory listing APIs
+- Authentication support
+- Async Python SDK
+- Batch memory APIs
 
-with:
+## v0.7
 
-## v0.5
-
-* Memory update APIs
-* Memory listing APIs
-* Memory expiration policies
-* Publish SDK to PyPI
-* Authentication support for SDK
+- pgvector integration
+- Native vector similarity search
+- Vector indexing
+- Performance optimizations
 
 ## v1.0
 
-* PostgreSQL backend
-* pgvector integration
-* Redis session memory
-* Multi-tenant support
-* OpenAI integration
-* Ollama integration
-* LangGraph integration
-* MCP compatibility
-* Cloud deployment guides
+- Redis session memory
+- Multi-tenant support
+- OpenAI integration
+- Ollama integration
+- LangGraph integration
+- MCP compatibility
+- Cloud deployment guides
+
 
 ---
 

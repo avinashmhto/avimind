@@ -4,8 +4,8 @@ services:
     container_name: avimind
     ports:
       - "8000:8000"
+    env_file:
+      - .env
     volumes:
       - ./data:/app/data
-    environment:
-      - AVIMIND_DB_URL=sqlite:////app/data/avimind.db
     restart: unless-stopped
