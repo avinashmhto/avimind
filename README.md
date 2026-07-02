@@ -12,11 +12,13 @@
 ![Downloads](https://img.shields.io/pypi/dm/avimind)
 ![GitHub stars](https://img.shields.io/github/stars/avinashmhto/avimind?style=social)
 
-> **The open-source memory layer that gives AI agents long-term memory through semantic search, hybrid retrieval, intelligent ranking, and automatic deduplication.**
+> **The Open-Source Memory OS for AI Agents.**
+>
+> **AviMind enables AI agents to remember, reason, consolidate knowledge, and continuously evolve long-term intelligence across conversations, workflows, and applications.**
 
-AviMind is an open-source persistent memory engine for AI agents and LLM-powered applications. It enables applications to remember user preferences, business context, conversations, and long-term knowledge across sessions.
+Unlike traditional vector stores and memory libraries that primarily focus on storing and retrieving embeddings, AviMind manages the complete lifecycle of AI memory—from remembering and retrieval to consolidation, reflection, reasoning, and long-term knowledge evolution.
 
-Unlike traditional chat history, AviMind combines **semantic search**, **hybrid retrieval**, **keyword awareness**, and **memory importance scoring** to retrieve the most relevant context for your AI applications.
+Built on semantic search, hybrid retrieval, intelligent ranking, and AI-powered memory intelligence, AviMind helps agents retain meaningful context across sessions instead of simply storing conversation history.
 
 # 📦 Install
 
@@ -57,33 +59,62 @@ print(
 * ✅ Automatic duplicate detection
 * ✅ Memory importance scoring
 * ✅ Intelligent context retrieval
+* ✅ Memory lifecycle management
+* ✅ Memory update & versioning
+* ✅ Memory relationships (graph foundation)
+* ✅ AI-powered memory consolidation
+* ✅ LLM-generated long-term summaries
 * ✅ FastAPI REST APIs
-* ✅ SQLite backend (zero configuration)
+* ✅ SQLite backend
+* ✅ PostgreSQL backend
+* ✅ Alembic migrations
 * ✅ Docker support
 * ✅ Python SDK
-* ✅ PostgreSQL backend
-* ✅ Alembic database migrations
-* 🚧 pgvector integration (planned)
-* 🚧 Redis session memory (planned)
+* ✅ LLM Integration
 
+### Coming Next
+
+* 🚧 Reflection Engine
+* 🚧 Decision Memory
+* 🚧 Episodic Memory
+* 🚧 Procedural Memory
+* 🚧 Memory Graph
+* 🚧 Multi-Agent Memory
+* 🚧 pgvector optimization
+
+# ⚙️ How AviMind Works
+
+<p align="center">
+  <img src="assets/how_avimind_works.png"
+       alt="How AviMind Works"
+       width="85%">
+</p>
+
+AviMind manages the complete lifecycle of AI memory—from remembering and retrieval to consolidation, reflection, reasoning, and long-term knowledge evolution.
 
 ---
 
 # 💡 Why AviMind?
 
-Most AI agents forget everything after a conversation ends.
+AviMind acts as a Memory OS for AI Agents, providing a unified platform to store, retrieve, consolidate, organize, and evolve long-term knowledge.
 
-AviMind acts as a reusable memory layer that enables applications to remember:
+Instead of treating memory as static storage, AviMind continuously transforms related memories into higher-level knowledge that agents can reason over.
 
-* User preferences
-* Business context
-* Long-term facts
-* Agent decisions
-* Tool outputs
-* Organizational knowledge
-* Previous conversations
+# 🧠 Memory Intelligence
 
-Instead of relying solely on exact keyword matching, AviMind uses embeddings and hybrid retrieval techniques to surface the most relevant memories automatically.
+Traditional memory libraries primarily focus on storing and retrieving vectors.
+
+AviMind goes beyond storage by transforming raw memories into structured long-term knowledge.
+
+Today AviMind can:
+
+- Consolidate similar memories into higher-level knowledge
+- Generate AI-powered memory summaries
+- Preserve provenance through memory relationships
+- Archive redundant memories
+- Maintain an evolving long-term memory store
+
+Future versions will introduce Reflection, Decision Memory, Episodic Memory, Procedural Memory, and Memory Graphs—allowing AI agents to continuously learn from experience rather than simply storing information.
 
 ---
 
@@ -262,9 +293,34 @@ client.delete("memory-id")
 
 - `health()`
 - `remember()`
+- `list()`
+- `get()`
+- `update()`
+- `delete()`
 - `search()`
 - `context()`
-- `delete()`
+
+# 🌐 REST APIs
+
+```text
+GET    /health
+
+POST   /memory
+GET    /memory
+GET    /memory/{id}
+PATCH  /memory/{id}
+DELETE /memory/{id}
+
+GET    /memory/search
+GET    /memory/context
+
+POST   /memory/consolidate
+```
+
+### Coming Soon
+
+- `consolidate()`
+- `reflect()`
 
 ---
 
@@ -315,73 +371,110 @@ AviMind retrieves relevant memories using semantic understanding and hybrid rank
 
 # 🏗️ Core Capabilities
 
-| Capability              | Status |
-| ----------------------- | ------ |
-| Persistent Memory       | ✅ |
-| Semantic Search         | ✅ |
-| Hybrid Retrieval        | ✅ |
-| Automatic Deduplication | ✅ |
-| Memory Ranking          | ✅ |
-| Context Retrieval       | ✅ |
-| FastAPI REST API        | ✅ |
-| SQLite Backend          | ✅ |
-| PostgreSQL Backend      | ✅ |
-| Alembic Migrations      | ✅ |
-| Docker Support          | ✅ |
-| Python SDK              | ✅ |
-| pgvector Integration    | 🚧 Planned |
-| Redis Session Memory    | 🚧 Planned |
+| Capability               | Status |
+| ------------------------ | ------ |
+| Persistent Memory        | ✅      |
+| Semantic Search          | ✅      |
+| Hybrid Retrieval         | ✅      |
+| Automatic Deduplication  | ✅      |
+| Memory Ranking           | ✅      |
+| Context Retrieval        | ✅      |
+| Memory Lifecycle         | ✅      |
+| Memory Versioning        | ✅      |
+| AI Memory Consolidation  | ✅      |
+| LLM Memory Summarization | ✅      |
+| Memory Relationships     | ✅      |
+| FastAPI REST API         | ✅      |
+| SQLite Backend           | ✅      |
+| PostgreSQL Backend       | ✅      |
+| Alembic Migrations       | ✅      |
+| Docker Support           | ✅      |
+| Python SDK               | ✅      |
+| Reflection Engine        | 🚧     |
+| Decision Memory          | 🚧     |
+| Memory Graph             | 🚧     |
+| Multi-Agent Memory       | 🚧     |
+
 
 ---
 
-# 🚧 Current Status
+# 🚀 Current Status
 
-**Version:** `0.5.0`
+**Version:** `0.7.0`
 
-Implemented:
+### Currently Implemented
 
-* Persistent memory storage
-* Semantic search
-* Hybrid retrieval
-* Automatic duplicate detection
-* Memory importance scoring
-* Context retrieval APIs
-* SQLite backend
-* PostgreSQL backend
-* Alembic migrations
-* Docker support
-* Python SDK
-* REST APIs with Swagger
-* Published on PyPI
+- Persistent Memory
+- Semantic Search
+- Hybrid Retrieval
+- Memory Importance Scoring
+- Automatic Deduplication
+- Memory Lifecycle Management
+- Memory Updates
+- Soft Delete
+- Memory Versioning
+- AI-powered Memory Consolidation
+- LLM-generated Consolidated Memories
+- Memory Relationships
+- SQLite
+- PostgreSQL
+- Alembic
+- Docker
+- Python SDK
+- FastAPI APIs
+- Swagger Documentation
+
+AviMind has now evolved from a persistent memory database into a Memory OS foundation capable of transforming raw memories into higher-level long-term knowledge.
 
 ---
 
 # 🛣️ Roadmap
 
-## v0.6
+## v0.8 — Reflection Engine
 
-- Memory update APIs
-- Memory listing APIs
-- Authentication support
-- Async Python SDK
-- Batch memory APIs
+- Automatic memory reflection
+- Periodic knowledge synthesis
+- Long-term memory compression
+- Memory promotion
+- Memory archival
 
-## v0.7
+---
 
-- pgvector integration
-- Native vector similarity search
-- Vector indexing
-- Performance optimizations
+## v0.9 — Memory Intelligence
 
-## v1.0
+- Decision Memory
+- Episodic Memory
+- Semantic Memory
+- Procedural Memory
+- Goal Memory
+- Task Memory
 
-- Redis session memory
-- Multi-tenant support
-- OpenAI integration
-- Ollama integration
-- LangGraph integration
-- MCP compatibility
-- Cloud deployment guides
+---
+
+## v1.0 — Memory Intelligence Platform
+
+- Knowledge Graph
+- Memory Relationships
+- Reflection Engine
+- Decision Memory
+- Episodic Memory
+- Procedural Memory
+- Agent Reasoning
+
+---
+
+## v1.1 — Multi-Agent Memory
+
+- Shared memory
+- Team memory
+- Organization memory
+- Agent collaboration
+
+---
+
+## Future Vision
+
+AviMind aims to become the Memory OS for AI Agents—providing a unified memory layer where agents can remember, reason, learn, reflect, make decisions, and continuously improve over time.
 
 
 ---

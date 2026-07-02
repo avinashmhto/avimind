@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
 
 from sqlalchemy import or_
@@ -11,7 +12,7 @@ from avimind_server.embeddings import (
     generate_embedding,
 )
 from avimind_server.models import Memory
-from avimind_server.schemas import MemoryCreateRequest
+from avimind_server.schemas import MemoryCreateRequest, MemoryUpdateRequest
 
 
 DUPLICATE_THRESHOLD = 0.92
@@ -21,13 +22,19 @@ IMPORTANCE_WEIGHT = 0.05
 KEYWORD_WEIGHT_CAP = 0.10
 TAG_WEIGHT_CAP = 0.05
 
+ACTIVE_STATUS = "active"
+DELETED_STATUS = "deleted"
+
 
 def create_memory(db: Session, request: MemoryCreateRequest) -> Tuple[Memory, bool]:
     new_embedding = generate_embedding(request.content)
 
     existing_memories = (
         db.query(Memory)
-        .filter(Memory.user_id == request.user_id)
+        .filter(
+            Memory.user_id == request.user_id,
+            Memory.status == ACTIVE_STATUS,
+        )
         .limit(100)
         .all()
     )
@@ -41,7 +48,10 @@ def create_memory(db: Session, request: MemoryCreateRequest) -> Tuple[Memory, bo
 
         if similarity >= DUPLICATE_THRESHOLD:
             memory.importance = max(memory.importance or 0.5, request.importance)
+            memory.confidence = max(memory.confidence or 1.0, request.confidence)
             memory.metadata_json = _merge_metadata(memory.metadata_json, request.metadata)
+            memory.updated_at = datetime.utcnow()
+
             db.commit()
             db.refresh(memory)
             return memory, True
@@ -56,6 +66,11 @@ def create_memory(db: Session, request: MemoryCreateRequest) -> Tuple[Memory, bo
         created_by=request.created_by,
         tags=request.tags,
         importance=request.importance,
+        confidence=request.confidence,
+        expires_at=request.expires_at,
+        status=ACTIVE_STATUS,
+        access_count=0,
+        version=1,
         embedding_json=embedding_to_json(new_embedding),
         metadata_json=request.metadata,
     )
@@ -65,6 +80,111 @@ def create_memory(db: Session, request: MemoryCreateRequest) -> Tuple[Memory, bo
     db.refresh(memory)
 
     return memory, False
+
+
+def list_memories(
+    db: Session,
+    user_id: str,
+    agent_id: Optional[str] = None,
+    session_id: Optional[str] = None,
+    memory_type: Optional[str] = None,
+    status: Optional[str] = ACTIVE_STATUS,
+    limit: int = 50,
+    offset: int = 0,
+) -> List[Memory]:
+    db_query = db.query(Memory).filter(Memory.user_id == user_id)
+
+    if agent_id:
+        db_query = db_query.filter(Memory.agent_id == agent_id)
+
+    if session_id:
+        db_query = db_query.filter(Memory.session_id == session_id)
+
+    if memory_type:
+        db_query = db_query.filter(Memory.memory_type == memory_type)
+
+    if status:
+        db_query = db_query.filter(Memory.status == status)
+
+    return (
+        db_query.order_by(Memory.updated_at.desc(), Memory.created_at.desc())
+        .offset(offset)
+        .limit(limit)
+        .all()
+    )
+
+
+def get_memory(db: Session, memory_id: str) -> Optional[Memory]:
+    memory = (
+        db.query(Memory)
+        .filter(
+            Memory.id == memory_id,
+            Memory.status != DELETED_STATUS,
+        )
+        .first()
+    )
+
+    if not memory:
+        return None
+
+    _mark_accessed(db, memory)
+    return memory
+
+
+def update_memory(
+    db: Session,
+    memory_id: str,
+    request: MemoryUpdateRequest,
+) -> Optional[Memory]:
+    memory = (
+        db.query(Memory)
+        .filter(
+            Memory.id == memory_id,
+            Memory.status != DELETED_STATUS,
+        )
+        .first()
+    )
+
+    if not memory:
+        return None
+
+    content_changed = False
+
+    if request.memory_type is not None:
+        memory.memory_type = request.memory_type
+
+    if request.content is not None:
+        memory.content = request.content
+        memory.embedding_json = embedding_to_json(generate_embedding(request.content))
+        content_changed = True
+
+    if request.tags is not None:
+        memory.tags = request.tags
+
+    if request.importance is not None:
+        memory.importance = request.importance
+
+    if request.confidence is not None:
+        memory.confidence = request.confidence
+
+    if request.status is not None:
+        memory.status = request.status
+
+    if request.expires_at is not None:
+        memory.expires_at = request.expires_at
+
+    if request.metadata is not None:
+        memory.metadata_json = request.metadata
+
+    if content_changed:
+        memory.version = (memory.version or 1) + 1
+
+    memory.updated_at = datetime.utcnow()
+
+    db.commit()
+    db.refresh(memory)
+
+    return memory
 
 
 def search_memories(
@@ -79,7 +199,10 @@ def search_memories(
     query_embedding = generate_embedding(query)
     query_terms = _tokenize(query)
 
-    db_query = db.query(Memory).filter(Memory.user_id == user_id)
+    db_query = db.query(Memory).filter(
+        Memory.user_id == user_id,
+        Memory.status == ACTIVE_STATUS,
+    )
 
     if agent_id:
         db_query = db_query.filter(
@@ -99,6 +222,11 @@ def search_memories(
     ranked_results = []
 
     for memory in memories:
+        if _is_expired(memory):
+            memory.status = "expired"
+            memory.updated_at = datetime.utcnow()
+            continue
+
         memory_embedding = embedding_from_json(memory.embedding_json)
         if not memory_embedding:
             continue
@@ -126,9 +254,18 @@ def search_memories(
             }
         )
 
+    db.commit()
+
     ranked_results.sort(key=lambda item: item["final_score"], reverse=True)
 
-    return ranked_results[:limit]
+    selected_results = ranked_results[:limit]
+
+    for item in selected_results:
+        _mark_accessed(db, item["memory"], commit=False)
+
+    db.commit()
+
+    return selected_results
 
 
 def get_context(
@@ -154,15 +291,40 @@ def get_context(
 
 
 def delete_memory(db: Session, memory_id: str) -> bool:
-    memory = db.query(Memory).filter(Memory.id == memory_id).first()
+    memory = (
+        db.query(Memory)
+        .filter(
+            Memory.id == memory_id,
+            Memory.status != DELETED_STATUS,
+        )
+        .first()
+    )
 
     if not memory:
         return False
 
-    db.delete(memory)
+    memory.status = DELETED_STATUS
+    memory.updated_at = datetime.utcnow()
+
     db.commit()
 
     return True
+
+
+def _mark_accessed(db: Session, memory: Memory, commit: bool = True) -> None:
+    memory.access_count = (memory.access_count or 0) + 1
+    memory.last_accessed_at = datetime.utcnow()
+
+    if commit:
+        db.commit()
+        db.refresh(memory)
+
+
+def _is_expired(memory: Memory) -> bool:
+    if not memory.expires_at:
+        return False
+
+    return memory.expires_at <= datetime.utcnow()
 
 
 def _tokenize(text: str) -> List[str]:

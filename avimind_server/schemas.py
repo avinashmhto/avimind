@@ -17,7 +17,27 @@ class MemoryCreateRequest(BaseModel):
 
     tags: Optional[List[str]] = Field(default=None, examples=[["aws", "singapore"]])
     importance: float = Field(default=0.5, ge=0.0, le=1.0)
+    confidence: float = Field(default=1.0, ge=0.0, le=1.0)
 
+    expires_at: Optional[datetime] = None
+    metadata: Optional[Dict[str, Any]] = None
+
+
+class MemoryUpdateRequest(BaseModel):
+    memory_type: Optional[str] = None
+    content: Optional[str] = None
+
+    tags: Optional[List[str]] = None
+    importance: Optional[float] = Field(default=None, ge=0.0, le=1.0)
+    confidence: Optional[float] = Field(default=None, ge=0.0, le=1.0)
+
+    status: Optional[str] = Field(
+        default=None,
+        examples=["active"],
+        description="Supported values: active, archived, deleted, expired, merged",
+    )
+
+    expires_at: Optional[datetime] = None
     metadata: Optional[Dict[str, Any]] = None
 
 
@@ -35,12 +55,21 @@ class MemoryResponse(BaseModel):
 
     tags: Optional[List[str]]
     importance: float
+    confidence: float
+
+    status: str
+    access_count: int
+    last_accessed_at: Optional[datetime]
+    expires_at: Optional[datetime]
+    version: int
+    parent_memory_id: Optional[str]
 
     metadata: Optional[Dict[str, Any]]
     similarity_score: Optional[float] = None
     final_score: Optional[float] = None
 
     created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
 
 class SearchResponse(BaseModel):
